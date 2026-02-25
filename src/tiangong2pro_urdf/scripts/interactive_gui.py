@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 import sys
 import time
+import json
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Bool
+from std_msgs.msg import Bool, String
 from sensor_msgs.msg import JointState
 from visualization_msgs.msg import Marker, MarkerArray
 from geometry_msgs.msg import Quaternion
@@ -150,6 +151,10 @@ class InteractiveGuiNode(Node):
         self.real_joint_sub = self.create_subscription(JointState, 'joint_states', self.real_joint_callback, 10)
         self.real_joint_states = {}
         
+        # JSON joint command subscription
+        self.joint_cmd_sub = self.create_subscription(String, '/gui/joint_command', self.joint_command_callback, 10)
+        self.gui_update_needed = False
+        
         self.joint_limits = {}
         self.joint_positions = {}
         self.links = {} # Stores visual info: link_name -> list of (mesh_path, xyz, rpy)
@@ -180,6 +185,60 @@ class InteractiveGuiNode(Node):
             if name in self.joint_positions:
                 self.joint_positions[name] = pos
         self.publish_ghost()
+    
+    def joint_command_callback(self, msg):
+        """Handle JSON joint command from /gui/joint_command topic.
+        
+        Expected format: {"1": 1.02, "13": 0.50}
+        Keys are motor IDs, values are positions in radians.
+        """
+        self.get_logger().info(f"Received joint command: {msg.data}")
+
+        try:
+            data = json.loads(msg.data)
+            updated_count = 0
+            
+            for motor_id_key, position in data.items():
+                try:
+                    motor_id = int(motor_id_key)
+                    position = float(position)
+                except (ValueError, TypeError) as e:
+                    self.get_logger().warn(f"Invalid motor ID or position format: {motor_id_key}={position}, {e}")
+                    continue
+                
+                # Check if motor ID exists
+                if motor_id not in MOTOR_ID_TO_JOINT:
+                    self.get_logger().warn(f"Unknown motor ID: {motor_id}, ignoring.")
+                    continue
+                
+                joint_name = MOTOR_ID_TO_JOINT[motor_id]
+                
+                # Check if joint has limits defined
+                if joint_name not in self.joint_limits:
+                    self.get_logger().warn(f"Joint '{joint_name}' (motor {motor_id}) has no limits defined, ignoring.")
+                    continue
+                
+                # Validate position is within limits
+                lower, upper = self.joint_limits[joint_name]
+                if position < lower or position > upper:
+                    self.get_logger().warn(
+                        f"Position {position:.3f} rad for joint '{joint_name}' (motor {motor_id}) "
+                        f"is out of range [{lower:.3f}, {upper:.3f}], ignoring.")
+                    continue
+                
+                # Update joint position
+                self.joint_positions[joint_name] = position
+                updated_count += 1
+            
+            if updated_count > 0:
+                self.gui_update_needed = True
+                self.publish_ghost()
+                self.get_logger().info(f"Updated {updated_count} joint(s) from JSON command.")
+                
+        except json.JSONDecodeError as e:
+            self.get_logger().error(f"Failed to parse JSON from /gui/joint_command: {e}")
+        except Exception as e:
+            self.get_logger().error(f"Error in joint_command_callback: {e}")
 
     def _load_urdf(self):
         try:
@@ -545,6 +604,11 @@ class RobotControlGui(QMainWindow):
             try:
                 rclpy.spin_once(self.node, timeout_sec=0)
                 
+                # Check if GUI update is needed from JSON command
+                if self.node.gui_update_needed:
+                    self._update_sliders_from_node_positions()
+                    self.node.gui_update_needed = False
+                
                 # Update status in title
                 current = self.node.is_robot_online
                 if getattr(self, 'last_status', None) != current:
@@ -566,6 +630,10 @@ class RobotControlGui(QMainWindow):
 
     def sync_sliders_to_real(self):
         self.node.sync_to_real()
+        self._update_sliders_from_node_positions()
+
+    def _update_sliders_from_node_positions(self):
+        """Update all sliders based on current node.joint_positions."""
         for jname, slider in self.sliders.items():
             if jname in self.node.joint_positions:
                 pos = self.node.joint_positions[jname]
