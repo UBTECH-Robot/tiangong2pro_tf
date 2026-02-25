@@ -490,7 +490,7 @@
     <axis xyz="1 0 0"/>
     <limit effort="6.3" lower="-0.4537856055185257" upper="0.4537856055185257" velocity="7.5398223686155035"/>
   </joint>
-  <link name="camera_head_link">
+  <link name="ob_camera_head_link">
     <inertial>
       <origin rpy="0 0 0" xyz="0.010986 -0.000307 -0.016475"/>
       <mass value="0.1"/>
@@ -515,7 +515,7 @@
   <joint name="camera_head_joint" type="fixed">
     <origin rpy="-1.8326 0 -1.5708" xyz="0.075191 0.010935 0.074436"/>
     <parent link="head_roll_link"/>
-    <child link="camera_head_link"/>
+    <child link="ob_camera_head_link"/>
     <axis xyz="0 0 0"/>
   </joint>
   <link name="shoulder_pitch_l_link">
@@ -980,7 +980,7 @@
     <child link="right_tcp_link"/>
     <axis xyz="0 0 0"/>
   </joint>
-  <link name="camera_body_front_link">
+  <link name="ob_camera_waist_link">
     <inertial>
       <origin rpy="0 0 0" xyz="0.023316 0.000241 -0.013373"/>
       <mass value="0.1"/>
@@ -1005,10 +1005,10 @@
   <joint name="camera_body_front_joint" type="fixed">
     <origin rpy="-2.1468 0 -1.5708" xyz="0.090583 0.02375 0.039012"/>
     <parent link="waist_yaw_link"/>
-    <child link="camera_body_front_link"/>
+    <child link="ob_camera_waist_link"/>
     <axis xyz="0 0 0"/>
   </joint>
-  <link name="camera_body_back_link">
+  <link name="ob_camera_back_link">
     <inertial>
       <origin rpy="0 0 0" xyz="0.023316 0.000241 -0.013373"/>
       <mass value="0.1"/>
@@ -1033,10 +1033,10 @@
   <joint name="camera_body_back_joint" type="fixed">
     <origin rpy="2.0071 0 -1.5708" xyz="-0.11363 0.02375 0.2746"/>
     <parent link="waist_yaw_link"/>
-    <child link="camera_body_back_link"/>
+    <child link="ob_camera_back_link"/>
     <axis xyz="0 0 0"/>
   </joint>
-  <link name="imu_link">
+  <link name="imu">
     <inertial>
       <origin rpy="0 0 0" xyz="-0.006331 -0.007725 -0.008045"/>
       <mass value="0.02"/>
@@ -1061,7 +1061,7 @@
   <joint name="imu_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.0499 -0.0358 -0.03194"/>
     <parent link="pelvis"/>
-    <child link="imu_link"/>
+    <child link="imu"/>
     <axis xyz="0 0 0"/>
   </joint>
   <link name="L_base_link">

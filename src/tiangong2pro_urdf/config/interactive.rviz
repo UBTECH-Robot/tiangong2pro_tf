@@ -101,17 +101,17 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        camera_body_back_link:
+        ob_camera_back_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        camera_body_front_link:
+        ob_camera_waist_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        camera_head_link:
+        ob_camera_head_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -181,7 +181,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        imu_link:
+        imu:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -293,11 +293,11 @@ Visualization Manager:
           Value: true
         waist_yaw_link:
           Value: true
-        camera_body_back_link:
+        ob_camera_back_link:
           Value: true
-        camera_body_front_link:
+        ob_camera_waist_link:
           Value: true
-        camera_head_link:
+        ob_camera_head_link:
           Value: true
         elbow_pitch_l_link:
           Value: true
@@ -325,7 +325,7 @@ Visualization Manager:
           Value: true
         hip_yaw_r_link:
           Value: true
-        imu_link:
+        imu:
           Value: true
         knee_pitch_l_link:
           Value: true
@@ -365,14 +365,14 @@ Visualization Manager:
       Tree:
         pelvis:
           waist_yaw_link:
-            camera_body_back_link:
+            ob_camera_back_link:
               {}
-            camera_body_front_link:
+            ob_camera_waist_link:
               {}
             head_yaw_link:
               head_pitch_link:
                 head_roll_link:
-                  camera_head_link:
+                  ob_camera_head_link:
                     {}
             shoulder_pitch_l_link:
               shoulder_roll_l_link:
@@ -406,7 +406,7 @@ Visualization Manager:
                   ankle_pitch_r_link:
                     ankle_roll_r_link:
                       {}
-          imu_link:
+          imu:
             {}
       Update Interval: 0
       Value: true
