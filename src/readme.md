@@ -54,6 +54,8 @@ sudo apt install -y \
 
 ```bash
 colcon build --symlink-install
+# 或者
+colcon build --packages-select tiangong2pro_urdf
 source install/setup.bash
 ```
 
