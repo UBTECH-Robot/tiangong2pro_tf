@@ -109,3 +109,9 @@ ros2 launch tiangong2pro_urdf display_with_hands.launch.py
    ```
    启动后会自动打开 RViz 和 Qt 控制面板。勾选 RViz 左侧 Displays 面板中的 `Ghost Robot` (MarkerArray) 即可看到预览模型。
 
+
+注：如果提示找不到 bodyctrl_msgs 包，可手动安装根目录下的这个包，如果是 arm 架构可安装 ros-humble-bodyctrl-msgs_0.0.0-0jammy_arm64.deb，如果是 x86 架构可安装 ros-humble-bodyctrl-msgs_0.0.1-1_amd64.deb，安装命令：
+
+```bash
+sudo dpkg -i xxx.deb
+```
