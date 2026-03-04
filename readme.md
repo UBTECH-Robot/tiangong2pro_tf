@@ -109,6 +109,13 @@ ros2 launch tiangong2pro_urdf display_with_hands.launch.py
    ```
    启动后会自动打开 RViz 和 Qt 控制面板。勾选 RViz 左侧 Displays 面板中的 `Ghost Robot` (MarkerArray) 即可看到预览模型。
 
+3. **配合抓取示例使用**
+
+   ```bash
+   ros2 launch tiangong2pro_urdf grasp_pose.launch.py
+   ```
+   启动后会自动打开 RViz 和 Qt 控制面板。并且已添加了识别物体的位姿和抓取点的位姿两个Pose，在识别到物体时即会显示物体位置和抓取点的位姿。
+
 
 注：如果提示找不到 bodyctrl_msgs 包，可手动安装根目录下的这个包，如果是 arm 架构可安装 ros-humble-bodyctrl-msgs_0.0.0-0jammy_arm64.deb，如果是 x86 架构可安装 ros-humble-bodyctrl-msgs_0.0.1-1_amd64.deb，安装命令：
 
